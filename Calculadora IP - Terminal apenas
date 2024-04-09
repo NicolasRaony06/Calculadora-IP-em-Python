@@ -31,40 +31,35 @@ while True:
 print('\n-_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_-ADDRESS RESULTS-_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_-')
 print('')
 
-class_ = 0
-if oct1 >= 1 and oct1 < 10:
-    class_ = 'Class A - Public'
-if oct1 > 10 and oct1 < 128:
-    class_ = 'Class A - Public'
-if oct1 > 127 and oct1 < 172:
-    class_ = 'Class B - Public'
-if oct1 == 172:
-    if oct2 > 31:
-        class_ = 'Class B - Public'
-if oct1 > 172 and oct1 < 192:
-    class_ = 'class B - Público'
-if oct1 == 192:
-    if oct2 < 168:
-        class_ = 'Class C - Public'
-if oct1 == 192:
-    if oct2 > 168:
-        class_ = 'Class C - Public'
-if oct1 > 192 and oct1 < 224:
-    class_ = 'Class C - Public'
-if oct1 > 223 and oct1 < 240:
-    class_ = 'Class D - Public'
-if oct1 > 239 and oct1 < 256:
-    class_ = 'Class E - Public'
-if oct1 == 10:
-    class_ = 'Class A - Private'
-if oct1 == 172:
-    if oct2 > 15 and oct2 < 32:
-        class_ = 'Class B - Private'
-if oct1 == 192:
-    if oct2 == 168:
-        class_ = 'Class C - Private'
+classe = ''
+if ip[0] >= 1 and ip[0] < 10:
+    classe = 'Class A - Public'
+elif ip[0] > 10 and ip[0] < 128:
+    classe = 'Class A - Public'
+elif ip[0] > 127 and ip[0] < 172:
+    classe = 'Class B - Public'
+elif ip[0] == 172:
+    if ip[1] > 31:
+        classe = 'Class B - Public'
+    if ip[1] > 15 and ip[1] < 32:
+        classe = 'Class B - Private'
+elif ip[0] > 172 and ip[0] < 192:
+    classe = 'class B - Público'
+elif ip[0] == 192:
+    if ip[1] == 168:
+        classe = 'Class C - Private'
+    else:
+        classe = 'Class C - Public'
+elif ip[0] > 192 and ip[0] < 224:
+    classe = 'Class C - Public'
+elif ip[0] > 223 and ip[0] < 240:
+    classe = 'Class D - Public'
+elif ip[0] > 239 and ip[0] < 256:
+    classe = 'Class E - Public'
+elif ip[0] == 10:
+    classe = 'Class A - Private'
 
-print('Address: {}.{}.{}.{} - {}'.format(ip[0], ip[1], ip[2], ip[3], class_))
+print('Address: {}.{}.{}.{} - {}'.format(ip[0], ip[1], ip[2], ip[3], classe))
 
 def mask8():
     print('\nNetwork: {}.{}.{}.{}'.format(ip[0], 0, 0, 0))
