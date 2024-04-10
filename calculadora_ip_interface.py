@@ -339,6 +339,28 @@ def main(page: ft.Page):
 
         page.add(ft.Text(classe))
         informacoes(classe, lista_ip, mascara)
+        
+    def cancelar_popup(event):
+        popup_enderecoinv.open = False
+        page.remove(*page.controls)
+        page.add(titulo, envio_info)
+        page.update()
+
+    botao_cancelar_popup = ft.ElevatedButton('Ok', on_click=cancelar_popup, width=180)
+    popup_enderecoinv = ft.AlertDialog( 
+        modal= True,
+        open= False,
+        title= ft.Text("ERRO!", text_align=ft.TextAlign.CENTER),
+        content= ft.Text("Endereço IP inválido!\nO endereço IP deve seguir junto a sua mascara, o formato '0.0.0.0/24' com \nvalores de octetos e mascaras válidos"),
+        actions= [botao_cancelar_popup], actions_alignment=ft.MainAxisAlignment.CENTER 
+    )
+
+    def abrir_popup(event):
+        page.dialog = popup_enderecoinv
+        popup_enderecoinv.open = True
+        ip_entrada.value = ''
+        page.remove(*page.controls)
+        page.update()
 
     def tratamento_ip(event):
         global lista_ip
@@ -346,15 +368,62 @@ def main(page: ft.Page):
 
         lista_ip = ip_entrada.value
 
-        mascara = lista_ip[3].split('/')
-        lista_ip[3] = mascara[0]
-        mascara.pop(0)
-        mascara = int(mascara[0])
+        while True:
+            try:
+                mascara = lista_ip[3].split('/')
+                lista_ip[3] = mascara[0]
+                mascara.pop(0)
+                mascara = int(mascara[0])
+                break
+            except IndexError:
+                ip_entrada.value = ''
+                lista_ip = ''
+                mascara = 0
+                abrir_popup(event)
+                break
             
-        for item in range(len(lista_ip)):
-            lista_ip[item] = int(lista_ip[item])
+        if lista_ip == '':
+            abrir_popup(event)
+        else:
+            for item in range(len(lista_ip)):
+                lista_ip[item] = int(lista_ip[item])
 
-        classificacao(lista_ip, mascara)
+        ordem = 0
+        acertos = 0
+        for octeto in lista_ip:
+            ordem += 1
+            match ordem:
+                case 1:
+                    if octeto > 0 and octeto < 256:
+                        acertos += 1
+                        continue
+                    else:
+                        abrir_popup(event)
+                        break
+                case 2:
+                    if octeto >= 0 and octeto < 256:
+                        acertos += 1
+                        continue
+                    else:
+                        abrir_popup(event)
+                        break
+                case 3:
+                    if octeto >= 0 and octeto < 256:
+                        acertos += 1
+                        continue
+                    else:
+                        abrir_popup(event)
+                        break
+                case 4:
+                    if octeto >= 0 and octeto < 256:
+                        acertos += 1
+                        continue
+                    else:
+                        abrir_popup(event)
+                        break
+
+        if acertos == 4:
+            classificacao(lista_ip, mascara)
    
     ip_entrada = ft.TextField(
         label="Endereço Ip", hint_text='0.0.0.0/0',
