@@ -1,6 +1,12 @@
-print("-_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_-IP ADDRESSES-_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_-\n")
+def titulo(coeficiente, valor):
+    print(f"-_-"*coeficiente,valor,"-_-"*coeficiente,"\n")
+
+titulo(15, "IP ADDRESSES")
 print(
-    "Starting IP Address	   Ending IP Address     	Subnet Mask   \n Class A 10.0.0.0	    10.255.255.255	         255.0.0.0 \n Class B 172.16.0.0	    172.31.255.255	         255.255.0.0 \n Class C 192.168.0.0	192.168.255.255	         255.255.255.0\n")
+'''Starting IP Address      Ending IP Address       Subnet Mask   
+    Class A 10.0.0.0	   10.255.255.255	   255.0.0.0 
+    Class B 172.16.0.0	   172.31.255.255	   255.255.0.0  
+    Class C 192.168.0.0	   192.168.255.255	   255.255.255.0\n''')
 while True:
     try:
         while True:
@@ -20,16 +26,14 @@ while True:
         print("Valor inválido\n")
         continue
 while True:
-    mask = input("\nDigite o valor da máscara: ")
-    if mask == '/8' or mask =='/9' or mask == '/10' or mask == '/11' or mask == '/12' or mask == '/13' or mask == '/14' or mask == '/15' or mask == '/16' or mask == '/17' or mask == '/18' or mask == '/19' or mask == '/20' or mask == '/21' \
-        or mask == '/22' or mask == '/23' or mask == '/24' or mask == '/25' or mask == '/26' or mask == '/27' or mask == '/28' or mask == '/29' or mask == '/30' or mask == '/31' or mask == '/32':
+    mask = int(input("\nDigite o valor da máscara: ").strip("/"))
+    if mask in range(8, 33):
         break
     else:
         print('Valor inválido')
         continue
 
-print('\n-_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_-ADDRESS RESULTS-_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_-')
-print('')
+titulo(15, "ADDRESS RESULTS")
 
 classe = ''
 if ip[0] >= 1 and ip[0] < 10:
@@ -716,53 +720,53 @@ def mask32():
 
     print('\nHosts/Net: N/A')
 
-if mask == '/8':
+if mask == 8:
     mask8()
-elif mask == '/9':
+elif mask == 9:
     mask9()
-elif mask == '/10':
+elif mask == 10:
     mask10()
-elif mask == '/11':
+elif mask == 11:
     mask11()
-elif mask == '/12':
+elif mask == 12:
     mask12()
-elif mask == '/13':
+elif mask == 13:
     mask13()
-elif mask == '/14':
+elif mask == 14:
     mask14()
-elif mask == '/15':
+elif mask == 15:
     mask15()
-elif mask == '/16':
+elif mask == 16:
     mask16()
-elif mask == '/17':
+elif mask == 17:
     mask17()
-elif mask == '/18':
+elif mask == 18:
     mask18()
-elif mask == '/19':
+elif mask == 19:
     mask19()
-elif mask == '/20':
+elif mask == 20:
     mask20()
-elif mask == '/21':
+elif mask == 21:
     mask21()
-elif mask == '/22':
+elif mask == 22:
     mask22()
-elif mask == '/23':
+elif mask == 23:
     mask23()
-elif mask == '/24':
+elif mask == 24:
     mask24()
-elif mask == '/25':
+elif mask == 25:
     mask25()
-elif mask == '/26':
+elif mask == 26:
     mask26()
-elif mask == '/27':
+elif mask == 27:
     mask27()
-elif mask == '/28':
+elif mask == 28:
     mask28()
-elif mask == '/29':
+elif mask == 29:
     mask29()
-elif mask == '/30':
+elif mask == 30:
     mask30()
-elif mask == '/31':
+elif mask == 31:
     mask31()
-elif mask == '/32':
+elif mask == 32:
     mask32()
