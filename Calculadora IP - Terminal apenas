@@ -10,13 +10,20 @@ print(
 while True:
     try:
         while True:
-            oct1, oct2, oct3, oct4 = input("Digite o endereço ip: ").split('.')
-            ip = [0, 0, 0, 0]
-            ip[0] = oct1 = int(oct1)
-            ip[1] = oct2 = int(oct2)
-            ip[2] = oct3 = int(oct3)
-            ip[3] = oct4 = int(oct4)
-            if ip[0] >= 0 and ip[0] <= 255 and ip[1] >= 0 and ip[1] <= 255 and ip[2] >= 0 and ip[2] <= 255 and ip[3] >= 0 and ip[3] <= 255:
+            ip = input("Digite o endereço ip: ").split('.')
+
+            for octeto in range(len(ip)):
+                ip[octeto] = int(ip[octeto])
+
+            acertos = 0
+            for octeto in ip:
+                if octeto in range(0, 256):
+                    acertos += 1 
+                    continue
+                else:
+                    break
+
+            if acertos == 4:
                 break
             else:
                 print('Valor inválido\n')
@@ -25,6 +32,7 @@ while True:
     except ValueError:
         print("Valor inválido\n")
         continue
+    
 while True:
     mask = int(input("\nDigite o valor da máscara: ").strip("/"))
     if mask in range(8, 33):
@@ -158,34 +166,7 @@ def calcular_ip(ip, net_mask, range_lista, hostsnet):
         ip[posicao] = jump
         print(' {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3]))
 
-    print(f'\nHosts/Net: {2 ** hostsnet - 2}')
-
-
-    '''jumps = []
-    jumps2 = []
-    for i in range(0, 256, 255):
-        jumps.append(i)
-        jumps2.append(i)
-    del (jumps2[0])
-    for j in range(0, len(jumps)):
-        if j <= len(jumps2) - 1:
-            if ip[3] >= jumps[j] and ip[3] < jumps2[j]:
-                ip[3] = jumps[j]
-                print('\nNetwork: N/A')
-                print(' Broadcast: N/A')
-                print(' Firsthost: N/A')
-                print(' Lasthost: N/A')
-        else:
-            if ip[3] >= jumps[j]:
-                ip[3] = jumps[j]
-                print('\nNetwork: N/A')
-                print(' Broadcast: N/A')
-                print(' Firsthost: N/A')
-                print(' Lasthost: N/A')
-    print('\nNetmask: 255.255.255.255 = 32')
-    print('\nSubnets: N/A')
-
-    print('\nHosts/Net: N/A')'''
+    print(f'\nHosts/Net: {hostsnet}')
 
 if mask == 8:
     pass
