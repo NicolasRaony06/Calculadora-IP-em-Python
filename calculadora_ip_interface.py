@@ -1,6 +1,85 @@
 import flet as ft
+from fpdf import FPDF
+from time import strftime, localtime, sleep
 
 def main(page: ft.Page):
+    def gerar_relatorio(event):
+        relatorio = FPDF()
+        relatorio.add_page()
+        relatorio.set_font("Arial")
+
+        enderecos_pdf = [address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets]
+
+        data_atual = strftime("%d/%m/%Y às %H:%M:%S", localtime())
+
+        relatorio.set_font("Arial", "B", 20)
+
+        relatorio.cell(200, 10, txt="Cálculadora IP - Relatório", ln=True, align='C')
+
+        relatorio.set_font("Arial", "", 13)
+        relatorio.set_xy(15, 30)        
+
+        relatorio.multi_cell(0, 7, txt=f"Relatório do cálculo de ip do Endereço {lista_ip[0]}.{lista_ip[1]}.{lista_ip[2]}.{lista_ip[3]} de CDIR/Máscara {net_mask[0]}.{net_mask[1]}.{net_mask[2]}.{net_mask[3]} = {net_mask[4]}, registrado em {data_atual}. Os seguintes endereços abaixo, estão de acordo com o cálculo realizado:", align="J")
+
+        relatorio.set_font("Arial", "B", 11)
+
+        y_pdf = 55
+        for info in enderecos_pdf:
+            y_pdf += 10
+            relatorio.text(20, y_pdf, info)
+
+        for subnet in subnets_valores_lista:
+            y_pdf += 7
+            relatorio.text(20, y_pdf, subnet)
+
+        verificado = bool(1)
+        while True:
+            if not diretorio_pdf.value == '':              
+                try:
+                    relatorio.output(diretorio_pdf.value)
+                    break
+                except PermissionError:
+                    verificado = bool(0)
+                    break
+            else:
+                verificado = bool(0)
+                break  
+        
+        diretorio_pdf.value = ''
+        match verificado:
+            case True:
+                popup_relatorio.actions = []
+                popup_relatorio.content = ft.Text("Relatório criado com Sucesso!", size=17)
+                page.update()
+                sleep(1)
+                popup_relatorio.open = False
+                page.update()
+            case False:
+                popup_relatorio.content = ft.Column([diretorio_pdf, ft.Text("Diretório Inválido!", size=15)], height=75)
+                page.update()
+
+    def cancelar_popup_relatorio(event):
+        popup_relatorio.open = False
+        page.update() 
+
+    botao_gerar_relatorio = ft.ElevatedButton("Enviar", width=150, on_click=gerar_relatorio)
+    botao_cancelar_popup_relatorio = ft.ElevatedButton("Cancelar", width=150, on_click=cancelar_popup_relatorio)
+    diretorio_pdf = ft.TextField(label="Diretório Local", hint_text=f"Ex.: C:\\Desktop\\relatorio.pdf", width=500, on_submit=gerar_relatorio)
+    popup_relatorio = ft.AlertDialog(
+        modal=True,
+        open=True,
+        title= ft.Text('Gerar Relatório'),  
+    )
+
+    def abrir_popup_relatorio(event):
+        page.dialog = popup_relatorio
+        popup_relatorio.content = diretorio_pdf
+        popup_relatorio.actions = [botao_gerar_relatorio, botao_cancelar_popup_relatorio]
+        popup_relatorio.open = True
+        page.update()
+
+    botao_popup_relatorio = ft.ElevatedButton("Gerar Relatório",on_click = abrir_popup_relatorio)
+    
     def info_envio(address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores):
             global informacoes_ip
             informacoes_ip = ft.Column([ft.Text(address), ft.Text(network), ft.Text(broadcast), ft.Text(firsthost), ft.Text(lasthost), ft.Text(netmask),  ft.Text(hosts_net), ft.Text(subnets), subnets_valores])
@@ -16,12 +95,12 @@ def main(page: ft.Page):
 
             centralizar_info = ft.Row([informacoes_rede], alignment=ft.MainAxisAlignment.CENTER)
 
-            page.add(titulo, envio_info, centralizar_info)
+            page.add(titulo, envio_info, centralizar_info, botao_popup_relatorio)
 
     def informacoes(classe, ip, mascara): 
         ip_entrada.value = ''
         def calculo_ip(range_lista, net_mask, hostsnet):
-            global address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores
+            global address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores, subnets_valores_lista
             address = f'Address: {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]} | {classe}'
 
             net_mask2 = []
@@ -122,6 +201,7 @@ def main(page: ft.Page):
             for jump in range(0, range_lista[0], range_lista[1]):
                 ip[posicao] = jump
                 subnets_valores.controls.append(ft.Text(' {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3])))
+                subnets_valores_lista.append('   {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3]))
 
             hosts_net = ('\nHosts/Net: {}'.format(hostsnet))
 
