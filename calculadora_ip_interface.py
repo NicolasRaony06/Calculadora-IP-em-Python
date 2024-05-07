@@ -34,16 +34,16 @@ def main(page: ft.Page):
 
         verificado = bool(1)
         while True:
-            if not diretorio_pdf.value == '':              
+            if diretorio_pdf.value:              
                 try:
                     relatorio.output(diretorio_pdf.value)
                     break
-                except PermissionError:
+                except:
                     verificado = bool(0)
                     break
             else:
                 verificado = bool(0)
-                break  
+                break   
         
         diretorio_pdf.value = ''
         match verificado:
@@ -444,9 +444,24 @@ def main(page: ft.Page):
 
         if acertos == 4:
             classificacao(lista_ip, mascara)
-   
+    
+    def dark_light_mode(event):
+        if theme_mode.value:
+            page.theme_mode = ft.ThemeMode.DARK
+        else:
+            page.theme_mode = ft.ThemeMode.LIGHT
+        page.update()
+
+    theme_mode = ft.Switch(
+                adaptive=True,
+                label="Modo de Tema",
+                value=True,
+                on_change= dark_light_mode
+            )
+    
     ip_entrada = ft.TextField(
-        label="Endereço Ip", hint_text='0.0.0.0/0',
+        label="Endereço Ip", 
+        hint_text='0.0.0.0/0',
         on_submit=tratamento_ip,
         max_length=18
         )
@@ -457,7 +472,7 @@ def main(page: ft.Page):
 
     titulo = ft.Text('Calculadora IP', size=50, weight=ft.FontWeight.W_400, text_align=ft.TextAlign.END)
     enviar_botao = ft.ElevatedButton('Enviar',on_click=tratamento_ip)
-    envio_info = ft.Row([ip_entrada, enviar_botao], alignment=ft.MainAxisAlignment.CENTER)
+    envio_info = ft.Row([ip_entrada, enviar_botao, theme_mode], alignment=ft.MainAxisAlignment.CENTER)
 
     page.add(titulo, envio_info)
     page.scroll = 'always'
