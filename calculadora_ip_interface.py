@@ -32,17 +32,17 @@ def main(page: ft.Page):
             y_pdf += 7
             relatorio.text(20, y_pdf, subnet)
 
-        verificado = bool(1)
+        verificado = True
         while True:
             if diretorio_pdf.value:              
                 try:
                     relatorio.output(diretorio_pdf.value)
                     break
                 except:
-                    verificado = bool(0)
+                    verificado = False
                     break
             else:
-                verificado = bool(0)
+                verificado = False
                 break   
         
         diretorio_pdf.value = ''
@@ -80,7 +80,7 @@ def main(page: ft.Page):
 
     botao_popup_relatorio = ft.ElevatedButton("Gerar Relatório",on_click = abrir_popup_relatorio)
     
-    def info_envio(address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores):
+    def info_envio(event):
             global informacoes_ip
             informacoes_ip = ft.Column([ft.Text(address), ft.Text(network), ft.Text(broadcast), ft.Text(firsthost), ft.Text(lasthost), ft.Text(netmask),  ft.Text(hosts_net), ft.Text(subnets), subnets_valores])
 
@@ -97,12 +97,14 @@ def main(page: ft.Page):
 
             page.add(titulo, envio_info, centralizar_info, botao_popup_relatorio)
 
-    def informacoes(classe, ip, mascara): 
+    def informacoes(classe, ip, mascara):
         ip_entrada.value = ''
-        def calculo_ip(range_lista, net_mask, hostsnet):
-            global address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores, subnets_valores_lista
+        def calculo_ip(ip_info):
+            global address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores, subnets_valores_lista, net_mask
+
             address = f'Address: {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]} | {classe}'
 
+            net_mask = ip_info['net_mask']
             net_mask2 = []
             net_mask2.extend(net_mask)
             net_mask2.pop(-1)
@@ -134,6 +136,7 @@ def main(page: ft.Page):
 
             jumps = []
             jumps2 = []
+            range_lista = ip_info['range_lista']
             for i in range(0, range_lista[0], range_lista[1]):
                 jumps.append(i)
                 jumps2.append(i)
@@ -203,128 +206,81 @@ def main(page: ft.Page):
                 subnets_valores.controls.append(ft.Text(' {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3])))
                 subnets_valores_lista.append('   {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3]))
 
-            hosts_net = ('\nHosts/Net: {}'.format(hostsnet))
+            hosts_net = ('\nHosts/Net: {}'.format(ip_info['hostsnet']))
 
-            info_envio(address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores)
+            info_envio(None)
 
         page.remove(*page.controls)
-        global net_mask
         match mascara:
             case 8:
-                range_lista = [255, 255]
-                net_mask = [255,0,0,0,8]
-                hostsnet = (2 ** 24 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [255, 255], 'net_mask': [255,0,0,0,8], 'hostsnet': (2 ** 24 - 2)}
+                calculo_ip(ip_info)
             case 9:
-                range_lista = [129, 128]
-                net_mask = [255,128,0,0,9]
-                hostsnet = (2 ** 23 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [129, 128], 'net_mask': [255,128,0,0,9], 'hostsnet': (2 ** 23 - 2)}
+                calculo_ip(ip_info)
             case 10:
-                range_lista = [193, 64]
-                net_mask = [255,192,0,0,10]
-                hostsnet = (2 ** 22 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [193, 64], 'net_mask': [255,192,0,0,10], 'hostsnet': (2 ** 22 - 2)}
+                calculo_ip(ip_info)
             case 11:
-                range_lista = [225, 32]
-                net_mask = [255,224,0,0,11]
-                hostsnet = (2 ** 21 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [225, 32], 'net_mask': [255,224,0,0,11], 'hostsnet': (2 ** 21 - 2)}
+                calculo_ip(ip_info)
             case 12:
-                range_lista = [241, 16]
-                net_mask = [255,240,0,0,12]
-                hostsnet = (2 ** 20 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [241, 16], 'net_mask': [255,240,0,0,12], 'hostsnet': (2 ** 20 - 2)}
+                calculo_ip(ip_info)
             case 13:
-                range_lista = [249, 8]
-                net_mask = [255,248,0,0,13]
-                hostsnet = (2 ** 19 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [249, 8], 'net_mask': [255,248,0,0,13], 'hostsnet': (2 ** 19 - 2)}
+                calculo_ip(ip_info)
             case 14:
-                range_lista = [253, 4]
-                net_mask = [255,252,0,0,14]
-                hostsnet = (2 ** 18 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [253, 4], 'net_mask': [255,252,0,0,14], 'hostsnet': (2 ** 18 - 2)}
+                calculo_ip(ip_info)
             case 15:
-                range_lista = [255, 2]
-                net_mask = [255,254,0,0,15]
-                hostsnet = (2 ** 17 - 2) 
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [255, 2], 'net_mask': [255,254,0,0,15], 'hostsnet': (2 ** 17 - 2) }
+                calculo_ip(ip_info)
             case 16:
-                range_lista = [255, 255]
-                net_mask = [255,255,0,0,16]
-                hostsnet = (2 ** 16 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [255, 255], 'net_mask': [255,255,0,0,16], 'hostsnet': (2 ** 16 - 2)}
+                calculo_ip(ip_info)
             case 17:
-                range_lista = [129, 128]
-                net_mask = [255,255,128,0,17]
-                hostsnet = (2 ** 15 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [129, 128], 'net_mask': [255,255,128,0,17], 'hostsnet': (2 ** 15 - 2)}
+                calculo_ip(ip_info)
             case 18:
-                range_lista = [193, 64]
-                net_mask = [255,255,192,0,18]
-                hostsnet = (2 ** 14 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [193, 64], 'net_mask': [255,255,192,0,18], 'hostsnet': (2 ** 14 - 2)}
+                calculo_ip(ip_info)
             case 19:
-                range_lista = [225, 32]
-                net_mask = [255,255,224,0,19]
-                hostsnet = (2 ** 13 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [225, 32], 'net_mask': [255,255,224,0,19], 'hostsnet': (2 ** 13 - 2)}
+                calculo_ip(ip_info)
             case 20:
-                range_lista = [241, 16]
-                net_mask = [255,255,240,0,20]
-                hostsnet = (2 ** 12 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [241, 16], 'net_mask': [255,255,240,0,20], 'hostsnet': (2 ** 12 - 2)}
+                calculo_ip(ip_info)
             case 21:
-                range_lista = [249, 8]
-                net_mask = [255,255,248,0,21]
-                hostsnet = (2 ** 11 - 2) 
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [249, 8], 'net_mask': [255,255,248,0,21], 'hostsnet': (2 ** 11 - 2)}
+                calculo_ip(ip_info)
             case 22:
-                range_lista = [253, 4]
-                net_mask = [255,255,252,0,22]
-                hostsnet = (2 ** 10 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [253, 4], 'net_mask': [255,255,252,0,22], 'hostsnet': (2 ** 10 - 2)}
+                calculo_ip(ip_info)
             case 23:
-                range_lista = [255, 2]
-                net_mask = [255,255,254,0,23]
-                hostsnet = (2 ** 9 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [255, 2], 'net_mask': [255,255,254,0,23], 'hostsnet': (2 ** 9 - 2)}
+                calculo_ip(ip_info)
             case 24:
-                range_lista = [255, 255]
-                net_mask = [255,255,255,0,24]
-                hostsnet = (2 ** 8 - 2)  
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [255, 255], 'net_mask': [255,255,255,0,24], 'hostsnet': (2 ** 8 - 2)}
+                calculo_ip(ip_info)
             case 25:
-                range_lista = [129, 128]
-                net_mask = [255,255,255,128,25]
-                hostsnet = (2 ** 7 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [129, 128], 'net_mask': [255,255,255,128,25], 'hostsnet': (2 ** 7 - 2)}
+                calculo_ip(ip_info)
             case 26:
-                range_lista = [193, 64]
-                net_mask = [255,255,255,192,26]
-                hostsnet = (2 ** 6 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [193, 64], 'net_mask': [255,255,255,192,26], 'hostsnet': (2 ** 6 - 2)}
+                calculo_ip(ip_info)
             case 27:
-                range_lista = [225, 32]
-                net_mask = [255,255,255,224,27]
-                hostsnet = (2 ** 5 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [225, 32], 'net_mask': [255,255,255,224,27], 'hostsnet': (2 ** 5 - 2)}
+                calculo_ip(ip_info)
             case 28:
-                range_lista = [241, 16]
-                net_mask = [255,255,255,241,28]
-                hostsnet = (2 ** 4 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [241, 16], 'net_mask': [255,255,255,241,28], 'hostsnet': (2 ** 4 - 2)}
+                calculo_ip(ip_info)
             case 29:
-                range_lista = [249, 8]
-                net_mask = [255,255,255,248,29]
-                hostsnet = (2 ** 3 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [249, 8], 'net_mask': [255,255,255,248,29], 'hostsnet': (2 ** 3 - 2)}
+                calculo_ip(ip_info)
             case 30:
-                range_lista = [253, 4]
-                net_mask = [255,255,255,252,30]
-                hostsnet = (2 ** 2 - 2)
-                calculo_ip(range_lista, net_mask, hostsnet)
+                ip_info = {'range_lista': [253, 4], 'net_mask': [255,255,255,252,30], 'hostsnet': (2 ** 2 - 2)}
+                calculo_ip(ip_info)
             case _:
                 abrir_popup(None)
                 
@@ -384,18 +340,17 @@ def main(page: ft.Page):
 
     def tratamento_ip(event):
         global lista_ip
-        ip_entrada.value = (ip_entrada.value).split('.')
-
-        lista_ip = ip_entrada.value
 
         while True:
             try:
+                ip_entrada.value = (ip_entrada.value).split('.')
+                lista_ip = ip_entrada.value
                 mascara = lista_ip[3].split('/')
                 lista_ip[3] = mascara[0]
                 mascara.pop(0)
                 mascara = int(mascara[0])
                 break
-            except IndexError:
+            except:
                 ip_entrada.value = ''
                 lista_ip = ''
                 mascara = 0
@@ -406,7 +361,13 @@ def main(page: ft.Page):
             abrir_popup(event)
         else:
             for item in range(len(lista_ip)):
-                lista_ip[item] = int(lista_ip[item])
+                while True:
+                    try:
+                        lista_ip[item] = int(lista_ip[item])
+                        break
+                    except:
+                        abrir_popup(event)
+                        break
 
         ordem = 0
         acertos = 0
