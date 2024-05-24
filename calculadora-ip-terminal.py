@@ -73,7 +73,8 @@ elif ip[0] == 10:
 
 print('Address: {}.{}.{}.{} - {}'.format(ip[0], ip[1], ip[2], ip[3], classe))
 
-def calcular_ip(ip, net_mask, range_lista, hostsnet):
+def calcular_ip(ip_info):
+    net_mask = ip_info['net_mask']
     net_mask2 = []
     net_mask2.extend(net_mask)
     net_mask2.pop(-1)
@@ -105,6 +106,7 @@ def calcular_ip(ip, net_mask, range_lista, hostsnet):
 
     jumps = []
     jumps2 = []
+    range_lista = ip_info['range_lista']
     for i in range(0, range_lista[0], range_lista[1]):
         jumps.append(i)
         jumps2.append(i)
@@ -166,120 +168,75 @@ def calcular_ip(ip, net_mask, range_lista, hostsnet):
         ip[posicao] = jump
         print(' {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3]))
 
-    print(f'\nHosts/Net: {hostsnet}')
+    print(f'\nHosts/Net: {ip_info['hostsnet']}')
 
-if mask == 8:
-    range_lista = [255, 255]
-    net_mask = [255,0,0,0,8]
-    hostsnet = (2 ** 24 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 9:
-    range_lista = [129, 128]
-    net_mask = [255,128,0,0,9]
-    hostsnet = (2 ** 23 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 10:
-    range_lista = [193, 64]
-    net_mask = [255,192,0,0,10]
-    hostsnet = (2 ** 22 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 11:
-    range_lista = [225, 32]
-    net_mask = [255,224,0,0,11]
-    hostsnet = (2 ** 21 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 12:
-    range_lista = [241, 16]
-    net_mask = [255,240,0,0,12]
-    hostsnet = (2 ** 20 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 13:
-    range_lista = [249, 8]
-    net_mask = [255,248,0,0,13]
-    hostsnet = (2 ** 19 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 14:
-    range_lista = [253, 4]
-    net_mask = [255,252,0,0,14]
-    hostsnet = (2 ** 18 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 15:
-    range_lista = [255, 2]
-    net_mask = [255,254,0,0,15]
-    hostsnet = (2 ** 17 - 2) 
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 16:
-    range_lista = [255, 255]
-    net_mask = [255,255,0,0,16]
-    hostsnet = (2 ** 16 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 17:
-    range_lista = [129, 128]
-    net_mask = [255,255,128,0,17]
-    hostsnet = (2 ** 15 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 18:
-    range_lista = [193, 64]
-    net_mask = [255,255,192,0,18]
-    hostsnet = (2 ** 14 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 19:
-    range_lista = [225, 32]
-    net_mask = [255,255,224,0,19]
-    hostsnet = (2 ** 13 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 20:
-    range_lista = [241, 16]
-    net_mask = [255,255,240,0,20]
-    hostsnet = (2 ** 12 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 21:
-    range_lista = [249, 8]
-    net_mask = [255,255,248,0,21]
-    hostsnet = (2 ** 11 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 22:
-    range_lista = [253, 4]
-    net_mask = [255,255,252,0,22]
-    hostsnet = (2 ** 10 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 23:
-    range_lista = [255, 2]
-    net_mask = [255,255,254,0,23]
-    hostsnet = (2 ** 9 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 24:
-    range_lista = [255, 255]
-    net_mask = [255,255,255,0,24]
-    hostsnet = (2 ** 8 - 2)                                     
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 25:
-    range_lista = [129, 128]
-    net_mask = [255,255,255,128,25]
-    hostsnet = (2 ** 7 - 2)                                     
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 26:
-    range_lista = [193, 64]
-    net_mask = [255,255,255,192,26]
-    hostsnet = (2 ** 6 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 27:
-    range_lista = [225, 32]
-    net_mask = [255,255,255,224,27]
-    hostsnet = (2 ** 5 - 2) 
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 28:
-    range_lista = [241, 16]
-    net_mask = [255,255,255,241,28]
-    hostsnet = (2 ** 4 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 29:
-    range_lista = [249, 8]
-    net_mask = [255,255,255,248,29]
-    hostsnet = (2 ** 3 - 2)
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
-elif mask == 30:
-    range_lista = [253, 4]
-    net_mask = [255,255,255,252,30]
-    hostsnet = (2 ** 2 - 2) 
-    calcular_ip(ip, net_mask, range_lista, hostsnet)
+match mask:
+    case 8:
+        ip_info = {'range_lista': [255, 255], 'net_mask': [255,0,0,0,8], 'hostsnet': (2 ** 24 - 2)}
+        calcular_ip(ip_info)
+    case 9:
+        ip_info = {'range_lista': [129, 128], 'net_mask': [255,128,0,0,9], 'hostsnet': (2 ** 23 - 2)}
+        calcular_ip(ip_info)
+    case 10:
+        ip_info = {'range_lista': [193, 64], 'net_mask': [255,192,0,0,10], 'hostsnet': (2 ** 22 - 2)}
+        calcular_ip(ip_info)
+    case 11:
+        ip_info = {'range_lista': [225, 32], 'net_mask': [255,224,0,0,11], 'hostsnet': (2 ** 21 - 2)}
+        calcular_ip(ip_info)
+    case 12:
+        ip_info = {'range_lista': [241, 16], 'net_mask': [255,240,0,0,12], 'hostsnet': (2 ** 20 - 2)}
+        calcular_ip(ip_info)
+    case 13:
+        ip_info = {'range_lista': [249, 8], 'net_mask': [255,248,0,0,13], 'hostsnet': (2 ** 19 - 2)}
+        calcular_ip(ip_info)
+    case 14:
+        ip_info = {'range_lista': [253, 4], 'net_mask': [255,252,0,0,14], 'hostsnet': (2 ** 18 - 2)}
+        calcular_ip(ip_info)
+    case 15:
+        ip_info = {'range_lista': [255, 2], 'net_mask': [255,254,0,0,15], 'hostsnet': (2 ** 17 - 2) }
+        calcular_ip(ip_info)
+    case 16:
+        ip_info = {'range_lista': [255, 255], 'net_mask': [255,255,0,0,16], 'hostsnet': (2 ** 16 - 2)}
+        calcular_ip(ip_info)
+    case 17:
+        ip_info = {'range_lista': [129, 128], 'net_mask': [255,255,128,0,17], 'hostsnet': (2 ** 15 - 2)}
+        calcular_ip(ip_info)
+    case 18:
+        ip_info = {'range_lista': [193, 64], 'net_mask': [255,255,192,0,18], 'hostsnet': (2 ** 14 - 2)}
+        calcular_ip(ip_info)
+    case 19:
+        ip_info = {'range_lista': [225, 32], 'net_mask': [255,255,224,0,19], 'hostsnet': (2 ** 13 - 2)}
+        calcular_ip(ip_info)
+    case 20:
+        ip_info = {'range_lista': [241, 16], 'net_mask': [255,255,240,0,20], 'hostsnet': (2 ** 12 - 2)}
+        calcular_ip(ip_info)
+    case 21:
+        ip_info = {'range_lista': [249, 8], 'net_mask': [255,255,248,0,21], 'hostsnet': (2 ** 11 - 2)}
+        calcular_ip(ip_info)
+    case 22:
+        ip_info = {'range_lista': [253, 4], 'net_mask': [255,255,252,0,22], 'hostsnet': (2 ** 10 - 2)}
+        calcular_ip(ip_info)
+    case 23:
+        ip_info = {'range_lista': [255, 2], 'net_mask': [255,255,254,0,23], 'hostsnet': (2 ** 9 - 2)}
+        calcular_ip(ip_info)
+    case 24:
+        ip_info = {'range_lista': [255, 255], 'net_mask': [255,255,255,0,24], 'hostsnet': (2 ** 8 - 2)}
+        calcular_ip(ip_info)
+    case 25:
+        ip_info = {'range_lista': [129, 128], 'net_mask': [255,255,255,128,25], 'hostsnet': (2 ** 7 - 2)}
+        calcular_ip(ip_info)
+    case 26:
+        ip_info = {'range_lista': [193, 64], 'net_mask': [255,255,255,192,26], 'hostsnet': (2 ** 6 - 2)}
+        calcular_ip(ip_info)
+    case 27:
+        ip_info = {'range_lista': [225, 32], 'net_mask': [255,255,255,224,27], 'hostsnet': (2 ** 5 - 2)}
+        calcular_ip(ip_info)
+    case 28:
+        ip_info = {'range_lista': [241, 16], 'net_mask': [255,255,255,241,28], 'hostsnet': (2 ** 4 - 2)}
+        calcular_ip(ip_info)
+    case 29:
+        ip_info = {'range_lista': [249, 8], 'net_mask': [255,255,255,248,29], 'hostsnet': (2 ** 3 - 2)}
+        calcular_ip(ip_info)
+    case 30:
+        ip_info = {'range_lista': [253, 4], 'net_mask': [255,255,255,252,30], 'hostsnet': (2 ** 2 - 2)}
+        calcular_ip(ip_info)
