@@ -45,13 +45,14 @@ def main(page: ft.Page):
                 verificado = False
                 break   
         
+        diretorio_pdf_popupinfo = diretorio_pdf.value
         diretorio_pdf.value = ''
         match verificado:
             case True:
                 popup_relatorio.actions = []
-                popup_relatorio.content = ft.Text("Relatório criado com Sucesso!", size=17)
+                popup_relatorio.content = ft.Row([ft.Text(f"Relatório criado com Sucesso em:", size=15), ft.Text(f"{diretorio_pdf_popupinfo}", size=18,  weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.CENTER)])
                 page.update()
-                sleep(1)
+                sleep(1.5)
                 popup_relatorio.open = False
                 page.update()
             case False:
