@@ -287,29 +287,29 @@ def main(page: ft.Page):
                 
     def classificacao(lista_ip, mascara):
         classe = ''
-        if lista_ip[0] >= 1 and lista_ip[0] < 10:
+        if lista_ip[0] in range(1, 10): #TODO teste: lista_ip[0] in range(1, 10)
             classe = 'Class A - Public'
-        elif lista_ip[0] > 10 and lista_ip[0] < 128:
+        elif lista_ip[0] in range(11, 128): #TODO teste em: lista_ip[0] > 10 and lista_ip[0] < 128
             classe = 'Class A - Public'
-        elif lista_ip[0] > 127 and lista_ip[0] < 172:
+        elif lista_ip[0] in range(128, 172): #TODO teste em: lista_ip[0] > 127 and lista_ip[0] < 172
             classe = 'Class B - Public'
         elif lista_ip[0] == 172:
             if lista_ip[1] > 31:
                 classe = 'Class B - Public'
-            if lista_ip[1] > 15 and lista_ip[1] < 32:
+            if lista_ip[1] in range(16, 32): #TODO teste em: lista_ip[1] > 15 and lista_ip[1] < 32
                 classe = 'Class B - Private'
-        elif lista_ip[0] > 172 and lista_ip[0] < 192:
+        elif lista_ip[0] in range(173, 192): #TODO teste em: lista_ip[0] > 172 and lista_ip[0] < 192
             classe = 'class B - Público'
         elif lista_ip[0] == 192:
             if lista_ip[1] == 168:
                 classe = 'Class C - Private'
             else:
                 classe = 'Class C - Public'
-        elif lista_ip[0] > 192 and lista_ip[0] < 224:
+        elif lista_ip[0] in range(193, 224): #TODO teste em: lista_ip[0] > 192 and lista_ip[0] < 224
             classe = 'Class C - Public'
-        elif lista_ip[0] > 223 and lista_ip[0] < 240:
+        elif lista_ip[0] in range(224, 240): #TODO teste em: lista_ip[0] > 223 and lista_ip[0] < 240
             classe = 'Class D - Public'
-        elif lista_ip[0] > 239 and lista_ip[0] < 256:
+        elif lista_ip[0] in range(240, 256): #TODO teste em: lista_ip[0] > 239 and lista_ip[0] < 256
             classe = 'Class E - Public'
         elif lista_ip[0] == 10:
             classe = 'Class A - Private'
