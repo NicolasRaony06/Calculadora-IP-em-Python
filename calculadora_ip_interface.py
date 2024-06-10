@@ -1,6 +1,7 @@
 import flet as ft
 from fpdf import FPDF
 from time import strftime, localtime, sleep
+from os import getcwd
 
 def main(page: ft.Page):
     def gerar_relatorio(event):
@@ -33,17 +34,14 @@ def main(page: ft.Page):
             relatorio.text(20, y_pdf, subnet)
 
         verificado = True
-        while True:
-            if diretorio_pdf.value:              
-                try:
-                    relatorio.output(diretorio_pdf.value)
-                    break
-                except:
-                    verificado = False
-                    break
-            else:
+        if diretorio_pdf.value:              
+            try:
+                relatorio.output(diretorio_pdf.value)
+            except:
                 verificado = False
-                break   
+        else:
+            diretorio_pdf.value = getcwd()
+            relatorio.output('relatorio.pdf') 
         
         diretorio_pdf_popupinfo = diretorio_pdf.value
         diretorio_pdf.value = ''
