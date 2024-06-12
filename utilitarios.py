@@ -31,13 +31,23 @@ def classe_ip(ip):
     
     return classe
 
-def calcular_ip(ip_info, ip):
-    net_mask = ip_info['net_mask']
-    net_mask2 = []
-    net_mask2.extend(net_mask)
-    net_mask2.pop(-1)
+def calcular_ip(ip_info, ip, mascara): #TODO adicionar função de calcular hostnet e o range do pulos.
+    octetos_completos = mascara//8
+    octetos_incompletos = mascara%8
+
+    bits = [128,64,32,16,8,4,2,1]
+
+    cdir = [0,0,0,0]
+    for i in range(octetos_completos):
+        cdir[i] = 255
+
+    octeto = 0
+    for i in range(octetos_incompletos):
+        octeto += bits[i]
+        cdir[octetos_completos] = octeto
+
     posicao = -1
-    for octeto in net_mask2:
+    for octeto in cdir:
         posicao += 1
         if octeto < 255:
             match posicao:
@@ -120,7 +130,7 @@ def calcular_ip(ip_info, ip):
                         lasthost_octetos[posicao] = 255
                         print(' Lasthost: {}.{}.{}.{}'.format(lasthost_octetos[0], lasthost_octetos[1], lasthost_octetos[2], lasthost_octetos[3]))
 
-    print(f'\nNetmask: {net_mask[0]}.{net_mask[1]}.{net_mask[2]}.{net_mask[3]} = {net_mask[4]}')
+    print(f'\nNetmask: {cdir[0]}.{cdir[1]}.{cdir[2]}.{cdir[3]} = {mascara}')
     print('\nSubnets:')
     for jump in range(0, range_lista[0], range_lista[1]):
         ip[posicao] = jump
