@@ -42,9 +42,15 @@ def calcular_ip(ip_info, ip, mascara): #TODO adicionar função de calcular host
         cdir[i] = 255
 
     octeto = 0
-    for i in range(octetos_incompletos):
-        octeto += bits[i]
-        cdir[octetos_completos] = octeto
+    range_lista = []
+
+    if not octetos_incompletos == 0:
+        for i in range(octetos_incompletos):
+            octeto += bits[i]
+            range_lista = [octeto+1, bits[i]]
+            cdir[octetos_completos] = octeto
+    else:
+        range_lista = [255, 255]
 
     posicao = -1
     for octeto in cdir:
@@ -74,7 +80,6 @@ def calcular_ip(ip_info, ip, mascara): #TODO adicionar função de calcular host
 
     jumps = []
     jumps2 = []
-    range_lista = ip_info['range_lista']
     for i in range(0, range_lista[0], range_lista[1]):
         jumps.append(i)
         jumps2.append(i)
