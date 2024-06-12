@@ -31,7 +31,7 @@ def classe_ip(ip):
     
     return classe
 
-def calcular_ip(ip_info, ip, mascara): #TODO adicionar função de calcular hostnet e o range do pulos.
+def calcular_ip(ip, mascara):
     octetos_completos = mascara//8
     octetos_incompletos = mascara%8
 
@@ -141,4 +141,4 @@ def calcular_ip(ip_info, ip, mascara): #TODO adicionar função de calcular host
         ip[posicao] = jump
         print(' {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3]))
 
-    print(f'\nHosts/Net: {ip_info['hostsnet']}')
+    print(f'\nHosts/Net: {2**(32-mascara) - 2}')
