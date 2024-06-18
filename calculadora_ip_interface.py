@@ -310,21 +310,23 @@ def main(page: ft.Page):
                     except:
                         abrir_popup(event)
                         break
+        
+        if not mascara in range(8, 32):
+            abrir_popup(event)
+        else: 
+            for index, octeto in enumerate(ip):
+                verified = index
+                if index == 0:
+                    if not octeto in range(1, 256):
+                        abrir_popup(event)
+                        break
+                else:
+                    if not octeto in range(0, 256): 
+                        abrir_popup(event)
+                        break
 
-        verified = 0
-        for index, octeto in enumerate(ip):
-            verified += 1
-            if index == 0:
-                if not octeto in range(1, 256):
-                    abrir_popup(event)
-                    break
-            else:
-                if not octeto in range(0, 256): 
-                    abrir_popup(event)
-                    break
-                
-        if verified == 4:
-            classificacao(None)
+            if verified == 3:
+                classificacao(None)
     
     def dark_light_mode(event):
         if theme_mode.value:
