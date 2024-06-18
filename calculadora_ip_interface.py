@@ -4,7 +4,7 @@ from time import strftime, localtime, sleep
 from os import getcwd
 
 def main(page: ft.Page):
-    def gerar_relatorio(event):
+    def gerar_relatorio(event): #TODO Bug no texto do relatório, no CDIR não mostra os valores corretos.
         relatorio = FPDF()
         relatorio.add_page()
         relatorio.set_font("Arial")
@@ -20,7 +20,7 @@ def main(page: ft.Page):
         relatorio.set_font("Arial", "", 13)
         relatorio.set_xy(15, 30)        
 
-        relatorio.multi_cell(0, 7, txt=f"Relatório do cálculo de ip do Endereço {lista_ip[0]}.{lista_ip[1]}.{lista_ip[2]}.{lista_ip[3]} de CDIR/Máscara {net_mask[0]}.{net_mask[1]}.{net_mask[2]}.{net_mask[3]} = {net_mask[4]}, registrado em {data_atual}. Os seguintes endereços abaixo, estão de acordo com o cálculo realizado:", align="J")
+        relatorio.multi_cell(0, 7, txt=f"Relatório do cálculo de ip do Endereço {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]} de CDIR/Máscara {netmask[0]}.{netmask[1]}.{netmask[2]}.{netmask[3]} = {mascara}, registrado em {data_atual}. Os seguintes endereços abaixo, estão de acordo com o cálculo realizado:", align="J")
 
         relatorio.set_font("Arial", "B", 11)
 
@@ -81,7 +81,7 @@ def main(page: ft.Page):
     
     def info_envio(event):
             global informacoes_ip
-            informacoes_ip = ft.Column([ft.Text(address), ft.Text(network), ft.Text(broadcast), ft.Text(firsthost), ft.Text(lasthost), ft.Text(netmask),  ft.Text(hosts_net), ft.Text(subnets), subnets_valores])
+            informacoes_ip = ft.Column([ft.Text(address), ft.Text(network), ft.Text(broadcast), ft.Text(firsthost), ft.Text(lasthost), ft.Text(netmask), ft.Text(hosts_net), ft.Text(subnets), subnets_valores])
 
             informacoes_rede = ft.Container(
                 content= informacoes_ip,
@@ -95,225 +95,168 @@ def main(page: ft.Page):
             centralizar_info = ft.Row([informacoes_rede], alignment=ft.MainAxisAlignment.CENTER)
 
             page.add(titulo, envio_info, centralizar_info, botao_popup_relatorio)
+       
+    def calculo_ip(event): #TODO Filtro de máscara, 32 >= máscara >= 8.
+        global address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores, subnets_valores_lista
 
-    def informacoes(classe, ip, mascara):
         ip_entrada.value = ''
-        def calculo_ip(ip_info):
-            global address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores, subnets_valores_lista, net_mask
-
-            address = f'Address: {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]} | {classe}'
-
-            net_mask = ip_info['net_mask']
-            net_mask2 = []
-            net_mask2.extend(net_mask)
-            net_mask2.pop(-1)
-            posicao = -1
-            for octeto in net_mask2:
-                posicao += 1
-                if octeto < 255:
-                    match posicao:
-                        case 1:
-                            ip[posicao + 1] = 0
-                            ip[posicao + 2] = 0
-                            broadcast_octetos = [ip[0], ip[1], 255, 255]
-                            lasthost_octetos = [ip[0], ip[1], 255, 254]
-                            firsthost_octetos = [ip[0], ip[1], ip[2], 1]
-                            break
-                        case 2:
-                            ip[posicao + 1] = 0
-                            broadcast_octetos = [ip[0], ip[1], ip[2], 255]
-                            lasthost_octetos = [ip[0], ip[1], ip[2], 254]
-                            firsthost_octetos = [ip[0], ip[1], ip[2], 1]
-                            break
-                        case 3:
-                            broadcast_octetos = [ip[0], ip[1], ip[2], ip[3]]
-                            lasthost_octetos = [ip[0], ip[1], ip[2], ip[3]]
-                            firsthost_octetos = [ip[0], ip[1], ip[2], 1]
-                            break
-                else:
-                    continue
-
-            jumps = []
-            jumps2 = []
-            range_lista = ip_info['range_lista']
-            for i in range(0, range_lista[0], range_lista[1]):
-                jumps.append(i)
-                jumps2.append(i)
-            del (jumps2[0])
-
-            for j in range(0, len(jumps)):
-                if j <= len(jumps2) - 1:
-                    if ip[posicao] >= jumps[j] and ip[posicao] < jumps2[j]:
-                        ip[posicao] = jumps[j]
-                        network = (f'\nNetwork: {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]}')
-
-                        ip[posicao] = jumps2[j] - 1
-                        broadcast_octetos[posicao] = jumps2[j] - 1
-                        broadcast = (f' Broadcast: {broadcast_octetos[0]}.{broadcast_octetos[1]}.{broadcast_octetos[2]}.{broadcast_octetos[3]}')
-
-                        match posicao:
-                            case 3:
-                                firsthost_octetos[posicao] = jumps[j] + 1
-                                firsthost = (f' Firsthost: {firsthost_octetos[0]}.{firsthost_octetos[1]}.{firsthost_octetos[2]}.{firsthost_octetos[3]}')
-                            case _:
-                                firsthost_octetos[posicao] = jumps[j]
-                                firsthost = (f' Firsthost: {firsthost_octetos[0]}.{firsthost_octetos[1]}.{firsthost_octetos[2]}.{firsthost_octetos[3]}')
-
-                        match posicao:
-                            case 3:
-                                lasthost_octetos[posicao] = jumps2[j] - 2
-                                lasthost = (f' Lasthost: {lasthost_octetos[0]}.{lasthost_octetos[1]}.{lasthost_octetos[2]}.{lasthost_octetos[3]}')
-                            case _:
-                                lasthost_octetos[posicao] = jumps2[j] - 1
-                                lasthost = (f' Lasthost: {lasthost_octetos[0]}.{lasthost_octetos[1]}.{lasthost_octetos[2]}.{lasthost_octetos[3]}')
-                else:
-                    if ip[posicao] >= jumps[j]:
-                        ip[posicao] = jumps[j]
-                        network = (f'\nNetwork: {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]}')
-
-                        ip[posicao] = jumps[j] - 1
-                        broadcast_octetos[posicao] = 255
-                        broadcast = (f' Broadcast: {broadcast_octetos[0]}.{broadcast_octetos[1]}.{broadcast_octetos[2]}.{broadcast_octetos[3]}')
-
-                        match posicao:
-                            case 3:
-                                firsthost_octetos[posicao] = jumps[j] + 1
-                                firsthost = (f' Firsthost: {firsthost_octetos[0]}.{firsthost_octetos[1]}.{firsthost_octetos[2]}.{firsthost_octetos[3]}')
-                            case _:
-                                firsthost_octetos[posicao] = jumps[j]
-                                firsthost = (f' Firsthost: {firsthost_octetos[0]}.{firsthost_octetos[1]}.{firsthost_octetos[2]}.{firsthost_octetos[3]}')
-
-                        match posicao:
-                            case 3:
-                                lasthost_octetos[posicao] = 254
-                                lasthost = (f' Lasthost: {lasthost_octetos[0]}.{lasthost_octetos[1]}.{lasthost_octetos[2]}.{lasthost_octetos[3]}')
-                            case _:
-                                lasthost_octetos[posicao] = 255
-                                lasthost = (f' Lasthost: {lasthost_octetos[0]}.{lasthost_octetos[1]}.{lasthost_octetos[2]}.{lasthost_octetos[3]}')
-
-            netmask = (f'\nNetmask: {net_mask[0]}.{net_mask[1]}.{net_mask[2]}.{net_mask[3]} = {net_mask[4]}')
-            subnets = ('\nSubnets:')
-            subnets_valores = ft.Column(
-                height=200,
-                width=250,
-                scroll=ft.ScrollMode.ALWAYS
-            )
-            subnets_valores_lista = []
-
-            for jump in range(0, range_lista[0], range_lista[1]):
-                ip[posicao] = jump
-                subnets_valores.controls.append(ft.Text(' {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3])))
-                subnets_valores_lista.append('   {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3]))
-
-            hosts_net = ('\nHosts/Net: {}'.format(ip_info['hostsnet']))
-
-            info_envio(None)
-
         page.remove(*page.controls)
-        match mascara:
-            case 8:
-                ip_info = {'range_lista': [255, 255], 'net_mask': [255,0,0,0,8], 'hostsnet': (2 ** 24 - 2)}
-                calculo_ip(ip_info)
-            case 9:
-                ip_info = {'range_lista': [129, 128], 'net_mask': [255,128,0,0,9], 'hostsnet': (2 ** 23 - 2)}
-                calculo_ip(ip_info)
-            case 10:
-                ip_info = {'range_lista': [193, 64], 'net_mask': [255,192,0,0,10], 'hostsnet': (2 ** 22 - 2)}
-                calculo_ip(ip_info)
-            case 11:
-                ip_info = {'range_lista': [225, 32], 'net_mask': [255,224,0,0,11], 'hostsnet': (2 ** 21 - 2)}
-                calculo_ip(ip_info)
-            case 12:
-                ip_info = {'range_lista': [241, 16], 'net_mask': [255,240,0,0,12], 'hostsnet': (2 ** 20 - 2)}
-                calculo_ip(ip_info)
-            case 13:
-                ip_info = {'range_lista': [249, 8], 'net_mask': [255,248,0,0,13], 'hostsnet': (2 ** 19 - 2)}
-                calculo_ip(ip_info)
-            case 14:
-                ip_info = {'range_lista': [253, 4], 'net_mask': [255,252,0,0,14], 'hostsnet': (2 ** 18 - 2)}
-                calculo_ip(ip_info)
-            case 15:
-                ip_info = {'range_lista': [255, 2], 'net_mask': [255,254,0,0,15], 'hostsnet': (2 ** 17 - 2) }
-                calculo_ip(ip_info)
-            case 16:
-                ip_info = {'range_lista': [255, 255], 'net_mask': [255,255,0,0,16], 'hostsnet': (2 ** 16 - 2)}
-                calculo_ip(ip_info)
-            case 17:
-                ip_info = {'range_lista': [129, 128], 'net_mask': [255,255,128,0,17], 'hostsnet': (2 ** 15 - 2)}
-                calculo_ip(ip_info)
-            case 18:
-                ip_info = {'range_lista': [193, 64], 'net_mask': [255,255,192,0,18], 'hostsnet': (2 ** 14 - 2)}
-                calculo_ip(ip_info)
-            case 19:
-                ip_info = {'range_lista': [225, 32], 'net_mask': [255,255,224,0,19], 'hostsnet': (2 ** 13 - 2)}
-                calculo_ip(ip_info)
-            case 20:
-                ip_info = {'range_lista': [241, 16], 'net_mask': [255,255,240,0,20], 'hostsnet': (2 ** 12 - 2)}
-                calculo_ip(ip_info)
-            case 21:
-                ip_info = {'range_lista': [249, 8], 'net_mask': [255,255,248,0,21], 'hostsnet': (2 ** 11 - 2)}
-                calculo_ip(ip_info)
-            case 22:
-                ip_info = {'range_lista': [253, 4], 'net_mask': [255,255,252,0,22], 'hostsnet': (2 ** 10 - 2)}
-                calculo_ip(ip_info)
-            case 23:
-                ip_info = {'range_lista': [255, 2], 'net_mask': [255,255,254,0,23], 'hostsnet': (2 ** 9 - 2)}
-                calculo_ip(ip_info)
-            case 24:
-                ip_info = {'range_lista': [255, 255], 'net_mask': [255,255,255,0,24], 'hostsnet': (2 ** 8 - 2)}
-                calculo_ip(ip_info)
-            case 25:
-                ip_info = {'range_lista': [129, 128], 'net_mask': [255,255,255,128,25], 'hostsnet': (2 ** 7 - 2)}
-                calculo_ip(ip_info)
-            case 26:
-                ip_info = {'range_lista': [193, 64], 'net_mask': [255,255,255,192,26], 'hostsnet': (2 ** 6 - 2)}
-                calculo_ip(ip_info)
-            case 27:
-                ip_info = {'range_lista': [225, 32], 'net_mask': [255,255,255,224,27], 'hostsnet': (2 ** 5 - 2)}
-                calculo_ip(ip_info)
-            case 28:
-                ip_info = {'range_lista': [241, 16], 'net_mask': [255,255,255,241,28], 'hostsnet': (2 ** 4 - 2)}
-                calculo_ip(ip_info)
-            case 29:
-                ip_info = {'range_lista': [249, 8], 'net_mask': [255,255,255,248,29], 'hostsnet': (2 ** 3 - 2)}
-                calculo_ip(ip_info)
-            case 30:
-                ip_info = {'range_lista': [253, 4], 'net_mask': [255,255,255,252,30], 'hostsnet': (2 ** 2 - 2)}
-                calculo_ip(ip_info)
-            case _:
-                abrir_popup(None)
+
+        address = f'Address: {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]} | {classe}'
+
+        octetos_completos = mascara//8
+        octetos_incompletos = mascara%8
+
+        bits = [128,64,32,16,8,4,2,1]
+
+        cdir = [0,0,0,0]
+        for i in range(octetos_completos):
+            cdir[i] = 255
+
+        octeto = 0
+        range_lista = []
+
+        if not octetos_incompletos == 0:
+            for i in range(octetos_incompletos):
+                octeto += bits[i]
+                range_lista = [octeto+1, bits[i]]
+                cdir[octetos_completos] = octeto
+        else:
+            range_lista = [255, 255]
+
+        posicao = -1
+        for octeto in cdir:
+            posicao += 1
+            if octeto < 255:
+                match posicao:
+                    case 1:
+                        ip[posicao + 1] = 0
+                        ip[posicao + 2] = 0
+                        broadcast_octetos = [ip[0], ip[1], 255, 255]
+                        lasthost_octetos = [ip[0], ip[1], 255, 254]
+                        firsthost_octetos = [ip[0], ip[1], ip[2], 1]
+                        break
+                    case 2:
+                        ip[posicao + 1] = 0
+                        broadcast_octetos = [ip[0], ip[1], ip[2], 255]
+                        lasthost_octetos = [ip[0], ip[1], ip[2], 254]
+                        firsthost_octetos = [ip[0], ip[1], ip[2], 1]
+                        break
+                    case 3:
+                        broadcast_octetos = [ip[0], ip[1], ip[2], ip[3]]
+                        lasthost_octetos = [ip[0], ip[1], ip[2], ip[3]]
+                        firsthost_octetos = [ip[0], ip[1], ip[2], 1]
+                        break
+            else:
+                continue
+
+        jumps = []
+        jumps2 = []
+        for i in range(0, range_lista[0], range_lista[1]):
+            jumps.append(i)
+            jumps2.append(i)
+        del (jumps2[0])
+
+        for j in range(0, len(jumps)):
+            if j <= len(jumps2) - 1:
+                if ip[posicao] >= jumps[j] and ip[posicao] < jumps2[j]:
+                    ip[posicao] = jumps[j]
+                    network = (f'\nNetwork: {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]}')
+
+                    ip[posicao] = jumps2[j] - 1
+                    broadcast_octetos[posicao] = jumps2[j] - 1
+                    broadcast = (f' Broadcast: {broadcast_octetos[0]}.{broadcast_octetos[1]}.{broadcast_octetos[2]}.{broadcast_octetos[3]}')
+
+                    match posicao:
+                        case 3:
+                            firsthost_octetos[posicao] = jumps[j] + 1
+                            firsthost = (f' Firsthost: {firsthost_octetos[0]}.{firsthost_octetos[1]}.{firsthost_octetos[2]}.{firsthost_octetos[3]}')
+                        case _:
+                            firsthost_octetos[posicao] = jumps[j]
+                            firsthost = (f' Firsthost: {firsthost_octetos[0]}.{firsthost_octetos[1]}.{firsthost_octetos[2]}.{firsthost_octetos[3]}')
+
+                    match posicao:
+                        case 3:
+                            lasthost_octetos[posicao] = jumps2[j] - 2
+                            lasthost = (f' Lasthost: {lasthost_octetos[0]}.{lasthost_octetos[1]}.{lasthost_octetos[2]}.{lasthost_octetos[3]}')
+                        case _:
+                            lasthost_octetos[posicao] = jumps2[j] - 1
+                            lasthost = (f' Lasthost: {lasthost_octetos[0]}.{lasthost_octetos[1]}.{lasthost_octetos[2]}.{lasthost_octetos[3]}')
+            else:
+                if ip[posicao] >= jumps[j]:
+                    ip[posicao] = jumps[j]
+                    network = (f'\nNetwork: {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]}')
+
+                    ip[posicao] = jumps[j] - 1
+                    broadcast_octetos[posicao] = 255
+                    broadcast = (f' Broadcast: {broadcast_octetos[0]}.{broadcast_octetos[1]}.{broadcast_octetos[2]}.{broadcast_octetos[3]}')
+
+                    match posicao:
+                        case 3:
+                            firsthost_octetos[posicao] = jumps[j] + 1
+                            firsthost = (f' Firsthost: {firsthost_octetos[0]}.{firsthost_octetos[1]}.{firsthost_octetos[2]}.{firsthost_octetos[3]}')
+                        case _:
+                            firsthost_octetos[posicao] = jumps[j]
+                            firsthost = (f' Firsthost: {firsthost_octetos[0]}.{firsthost_octetos[1]}.{firsthost_octetos[2]}.{firsthost_octetos[3]}')
+
+                    match posicao:
+                        case 3:
+                            lasthost_octetos[posicao] = 254
+                            lasthost = (f' Lasthost: {lasthost_octetos[0]}.{lasthost_octetos[1]}.{lasthost_octetos[2]}.{lasthost_octetos[3]}')
+                        case _:
+                            lasthost_octetos[posicao] = 255
+                            lasthost = (f' Lasthost: {lasthost_octetos[0]}.{lasthost_octetos[1]}.{lasthost_octetos[2]}.{lasthost_octetos[3]}')
+
+        netmask = (f'\nNetmask: {cdir[0]}.{cdir[1]}.{cdir[2]}.{cdir[3]} = {mascara}')
+        subnets = ('\nSubnets:')
+        subnets_valores = ft.Column(
+            height=200,
+            width=250,
+            scroll=ft.ScrollMode.ALWAYS
+        )
+        subnets_valores_lista = []
+
+        for jump in range(0, range_lista[0], range_lista[1]):
+            ip[posicao] = jump
+            subnets_valores.controls.append(ft.Text(' {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3])))
+            subnets_valores_lista.append('   {}.{}.{}.{}'.format(ip[0], ip[1], ip[2], ip[3]))
+
+        hosts_net = (f'\nHosts/Net: {2**(32-mascara) - 2}')
+
+        info_envio(None)
                 
-    def classificacao(lista_ip, mascara):
+    def classificacao(event):
+        global classe
         classe = ''
-        if lista_ip[0] in range(1, 10): #TODO teste: lista_ip[0] in range(1, 10)
+        if ip[0] in range(1, 10): #TODO teste: lista_ip[0] in range(1, 10)
             classe = 'Class A - Public'
-        elif lista_ip[0] in range(11, 128): #TODO teste em: lista_ip[0] > 10 and lista_ip[0] < 128
+        elif ip[0] in range(11, 128): #TODO teste em: lista_ip[0] > 10 and lista_ip[0] < 128
             classe = 'Class A - Public'
-        elif lista_ip[0] in range(128, 172): #TODO teste em: lista_ip[0] > 127 and lista_ip[0] < 172
+        elif ip[0] in range(128, 172): #TODO teste em: lista_ip[0] > 127 and lista_ip[0] < 172
             classe = 'Class B - Public'
-        elif lista_ip[0] == 172:
-            if lista_ip[1] > 31:
+        elif ip[0] == 172:
+            if ip[1] > 31:
                 classe = 'Class B - Public'
-            if lista_ip[1] in range(16, 32): #TODO teste em: lista_ip[1] > 15 and lista_ip[1] < 32
+            if ip[1] in range(16, 32): #TODO teste em: lista_ip[1] > 15 and lista_ip[1] < 32
                 classe = 'Class B - Private'
-        elif lista_ip[0] in range(173, 192): #TODO teste em: lista_ip[0] > 172 and lista_ip[0] < 192
+        elif ip[0] in range(173, 192): #TODO teste em: lista_ip[0] > 172 and lista_ip[0] < 192
             classe = 'class B - Público'
-        elif lista_ip[0] == 192:
-            if lista_ip[1] == 168:
+        elif ip[0] == 192:
+            if ip[1] == 168:
                 classe = 'Class C - Private'
             else:
                 classe = 'Class C - Public'
-        elif lista_ip[0] in range(193, 224): #TODO teste em: lista_ip[0] > 192 and lista_ip[0] < 224
+        elif ip[0] in range(193, 224): #TODO teste em: lista_ip[0] > 192 and lista_ip[0] < 224
             classe = 'Class C - Public'
-        elif lista_ip[0] in range(224, 240): #TODO teste em: lista_ip[0] > 223 and lista_ip[0] < 240
+        elif ip[0] in range(224, 240): #TODO teste em: lista_ip[0] > 223 and lista_ip[0] < 240
             classe = 'Class D - Public'
-        elif lista_ip[0] in range(240, 256): #TODO teste em: lista_ip[0] > 239 and lista_ip[0] < 256
+        elif ip[0] in range(240, 256): #TODO teste em: lista_ip[0] > 239 and lista_ip[0] < 256
             classe = 'Class E - Public'
-        elif lista_ip[0] == 10:
+        elif ip[0] == 10:
             classe = 'Class A - Private'
 
         page.add(ft.Text(classe))
-        informacoes(classe, lista_ip, mascara)
+        calculo_ip(None)
         
     def cancelar_popup(event):
         popup_enderecoinv.open = False
@@ -338,31 +281,31 @@ def main(page: ft.Page):
         page.update()
 
     def tratamento_ip(event):
-        global lista_ip
+        global ip, mascara
 
         while True:
             try:
                 ip_entrada.value = (ip_entrada.value).split('.')
-                lista_ip = ip_entrada.value
-                mascara = lista_ip[3].split('/')
-                lista_ip[3] = mascara[0]
+                ip = ip_entrada.value
+                mascara = ip[3].split('/')
+                ip[3] = mascara[0]
                 mascara.pop(0)
                 mascara = int(mascara[0])
                 break
             except:
                 ip_entrada.value = ''
-                lista_ip = ''
+                ip = ''
                 mascara = 0
                 abrir_popup(event)
                 break
             
-        if lista_ip == '':
+        if ip == '':
             abrir_popup(event)
         else:
-            for item in range(len(lista_ip)):
+            for item in range(len(ip)):
                 while True:
                     try:
-                        lista_ip[item] = int(lista_ip[item])
+                        ip[item] = int(ip[item])
                         break
                     except:
                         abrir_popup(event)
@@ -370,7 +313,7 @@ def main(page: ft.Page):
 
         ordem = 0
         acertos = 0
-        for octeto in lista_ip:
+        for octeto in ip:
             ordem += 1
             match ordem:
                 case 1:
@@ -403,7 +346,7 @@ def main(page: ft.Page):
                         break
 
         if acertos == 4:
-            classificacao(lista_ip, mascara)
+            classificacao(None)
     
     def dark_light_mode(event):
         if theme_mode.value:
