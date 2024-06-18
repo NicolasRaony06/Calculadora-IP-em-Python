@@ -311,41 +311,19 @@ def main(page: ft.Page):
                         abrir_popup(event)
                         break
 
-        ordem = 0
-        acertos = 0
-        for octeto in ip:
-            ordem += 1
-            match ordem:
-                case 1:
-                    if octeto > 0 and octeto < 256:
-                        acertos += 1
-                        continue
-                    else:
-                        abrir_popup(event)
-                        break
-                case 2:
-                    if octeto >= 0 and octeto < 256:
-                        acertos += 1
-                        continue
-                    else:
-                        abrir_popup(event)
-                        break
-                case 3:
-                    if octeto >= 0 and octeto < 256:
-                        acertos += 1
-                        continue
-                    else:
-                        abrir_popup(event)
-                        break
-                case 4:
-                    if octeto >= 0 and octeto < 256:
-                        acertos += 1
-                        continue
-                    else:
-                        abrir_popup(event)
-                        break
-
-        if acertos == 4:
+        verified = 0
+        for index, octeto in enumerate(ip):
+            verified += 1
+            if index == 0:
+                if not octeto in range(1, 256):
+                    abrir_popup(event)
+                    break
+            else:
+                if not octeto in range(0, 256): 
+                    abrir_popup(event)
+                    break
+                
+        if verified == 4:
             classificacao(None)
     
     def dark_light_mode(event):
