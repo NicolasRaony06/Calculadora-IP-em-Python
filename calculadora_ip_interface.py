@@ -20,7 +20,7 @@ def main(page: ft.Page):
         relatorio.set_font("Arial", "", 13)
         relatorio.set_xy(15, 30)        
 
-        relatorio.multi_cell(0, 7, txt=f"Relatório do cálculo de ip do Endereço {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]} de CDIR/Máscara {netmask[0]}.{netmask[1]}.{netmask[2]}.{netmask[3]} = {mascara}, registrado em {data_atual}. Os seguintes endereços abaixo, estão de acordo com o cálculo realizado:", align="J")
+        relatorio.multi_cell(0, 7, txt=f"Relatório do cálculo de ip do Endereço {ip[0]}.{ip[1]}.{ip[2]}.{ip[3]} de CDIR/Máscara {cdir[0]}.{cdir[1]}.{cdir[2]}.{cdir[3]} = {mascara}, registrado em {data_atual}. Os seguintes endereços abaixo estão de acordo com o cálculo realizado:", align="J")
 
         relatorio.set_font("Arial", "B", 11)
 
@@ -97,7 +97,7 @@ def main(page: ft.Page):
             page.add(titulo, envio_info, centralizar_info, botao_popup_relatorio)
        
     def calculo_ip(event): #TODO Filtro de máscara, 32 >= máscara >= 8.
-        global address, network, broadcast, firsthost, lasthost, netmask, hosts_net, subnets, subnets_valores, subnets_valores_lista
+        global address, network, broadcast, firsthost, lasthost, netmask, cdir, hosts_net, subnets, subnets_valores, subnets_valores_lista
 
         ip_entrada.value = ''
         page.remove(*page.controls)
